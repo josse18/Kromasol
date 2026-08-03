@@ -143,20 +143,26 @@
             box-shadow: 0 15px 40px rgba(230, 0, 126, 0.15);
         }
 
-        .card-img-placeholder {
+        /* Contenedor y efecto de zoom para la imagen WebP */
+        .card-img-container {
             width: 100%;
             height: 220px;
-            background-color: #eee;
+            overflow: hidden;
+            background-color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
         }
 
-        .card:hover .card-img-placeholder {
-            background-color: #e0e0e0;
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .product-img {
+            transform: scale(1.08);
         }
 
         .category-badge {
@@ -353,14 +359,15 @@
          SCRIPT DE FUNCIONALIDAD
          ========================================= -->
     <script>
-        // 1. BASE DE DATOS DE PRODUCTOS
+        // 1. BASE DE DATOS DE PRODUCTOS CON RUTAS DE IMÁGENES WEBP
+        // Asegúrate de crear una carpeta llamada 'img' y colocar tus archivos ahí.
         const productos = [
             {
                 nombre: "Supernova",
                 categoria: "Energía",
                 descripcion: "Polvo para preparar una bebida energética sabor cereza.",
                 beneficios: ["Contiene complejo B y Zinc", "Proporciona energía física y mental", "Ayuda a reducir la fatiga"],
-                imagenText: "Imagen de Supernova",
+                imagen: "Supernova.webp",
                 resenas: [
                     { usuario: "Carlos M.", texto: "Trabajo turnos de 12 horas y desde que lo tomo ya no siento ese bajón de energía a mitad del día. Excelente sabor.", estrellas: 5 },
                     { usuario: "Elena R.", texto: "Me ayuda muchísimo con mi rutina de ejercicios en la mañana. Lo recomiendo al 100%.", estrellas: 5 }
@@ -371,7 +378,7 @@
                 categoria: "Nutrición",
                 descripcion: "Suplemento multivitamínico con antioxidantes y minerales esenciales.",
                 beneficios: ["Refuerza el sistema inmunológico", "Rico en antioxidantes", "Complementa la nutrición diaria"],
-                imagenText: "Imagen de Kosmos",
+                imagen: "Kosmos by Kromasol Regenerador celular….webp",
                 resenas: [
                     { usuario: "Javier T.", texto: "Me he sentido mucho más fuerte y rara vez me resfrío desde que empecé a tomarlo todos los días.", estrellas: 5 }
                 ]
@@ -381,7 +388,7 @@
                 categoria: "Digestión",
                 descripcion: "Concentrado líquido a base de pulpa de Sábila (Aloe Vera) y Astaxantina.",
                 beneficios: ["Apoya la salud digestiva", "Poder desinflamatorio", "Rico en Vitamina C"],
-                imagenText: "Imagen de Vesta",
+                imagen: "Vesta by kromasol - goji, astaxantina y pulpa de sábila (1 lt).webp",
                 resenas: [
                     { usuario: "María F.", texto: "Sufría de gastritis y pesadez constante. Vesta me ha aliviado la inflamación estomacal de una forma increíble.", estrellas: 5 },
                     { usuario: "Roberto G.", texto: "Sabe muy bien en frío y mi digestión mejoró desde la primera semana.", estrellas: 5 }
@@ -392,7 +399,7 @@
                 categoria: "Control de Peso",
                 descripcion: "Bebida sabor capuchino o café negro formulada para el control de peso.",
                 beneficios: ["Contiene L-Carnitina y Hongo Shiitake", "Favorece el metabolismo", "Incluye fibra inulina de agave"],
-                imagenText: "Imagen de Nox",
+                imagen: "Nox - Kromasol Distribuidores.webp",
                 resenas: [
                     { usuario: "Silvia L.", texto: "Cambié mi café tradicional por Nox. Me da energía y me ha ayudado a controlar la ansiedad por comer pan dulce.", estrellas: 5 }
                 ]
@@ -402,7 +409,7 @@
                 categoria: "Nutrición",
                 descripcion: "Polvo para batidos ricos en proteínas, vitaminas y fibra.",
                 beneficios: ["Ideal como sustituto parcial", "Ayuda a la recuperación muscular", "Sensación de saciedad"],
-                imagenText: "Imagen de Antara",
+                imagen: "Antara.webp",
                 resenas: [
                     { usuario: "Andrés V.", texto: "Lo uso después de entrenar o cuando no tengo tiempo de desayunar fuerte. Te mantiene lleno por horas y no cae pesado.", estrellas: 5 }
                 ]
@@ -414,9 +421,8 @@
         const reviewsContainer = document.getElementById('reviews-container');
         const filterBtns = document.querySelectorAll('.filter-btn');
 
-        // 3. NÚMERO DE WHATSAPP (Coloca tu número aquí)
-        // Usa el formato 593 seguido de tus 9 dígitos. Ej: 593991234567
-        const numeroWhatsApp = "593999999999"; 
+        // 3. NÚMERO DE WHATSAPP (Configura tu número aquí con código 593)
+        const numeroWhatsApp = "593 0983437534"; 
 
         // 4. CONFIGURACIÓN DE ANIMACIONES (Intersection Observer)
         const observerOptions = {
@@ -430,30 +436,26 @@
                 if (entry.isIntersecting) {
                     setTimeout(() => {
                         entry.target.classList.add('visible');
-                    }, 50); // Pequeño retraso para efecto cascada
+                    }, 50);
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        // 5. FUNCIÓN PRINCIPAL DE RENDERIZADO (Actualiza Productos y Reseñas)
+        // 5. FUNCIÓN PRINCIPAL DE RENDERIZADO
         function renderizarCatalogo(filtro) {
-            // Limpiamos los contenedores
             productsContainer.innerHTML = ''; 
             reviewsContainer.innerHTML = ''; 
             
-            // Filtramos los datos
             const productosFiltrados = filtro === 'Todos' 
                 ? productos 
                 : productos.filter(p => p.categoria === filtro);
 
-            // Generamos las tarjetas de productos y sus reseñas
             productosFiltrados.forEach(producto => {
                 
-                // --- RENDERIZAR PRODUCTO ---
+                // --- RENDERIZAR PRODUCTO CON IMAGEN WEBP ---
                 const beneficiosHTML = producto.beneficios.map(b => `<li>${b}</li>`).join('');
                 
-                // Mensaje dinámico para WhatsApp
                 const textoMensaje = `Hola, me interesa obtener más información sobre el producto ${producto.nombre}.`;
                 const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(textoMensaje)}`;
                 
@@ -462,8 +464,8 @@
                 cardProduct.innerHTML = `
                     <div style="position: relative;">
                         <span class="category-badge">${producto.categoria}</span>
-                        <div class="card-img-placeholder">
-                            ${producto.imagenText}
+                        <div class="card-img-container">
+                            <img src="${producto.imagen}" alt="Producto ${producto.nombre}" class="product-img">
                         </div>
                     </div>
                     <div class="card-content">
@@ -479,9 +481,9 @@
                 `;
                 
                 productsContainer.appendChild(cardProduct);
-                observer.observe(cardProduct); // Animamos la nueva tarjeta
+                observer.observe(cardProduct);
 
-                // --- RENDERIZAR RESEÑAS DE ESTE PRODUCTO ---
+                // --- RENDERIZAR RESEÑAS ---
                 if(producto.resenas) {
                     producto.resenas.forEach(resena => {
                         const cardReview = document.createElement('div');
@@ -493,7 +495,7 @@
                             <span class="review-author">${resena.usuario}</span>
                         `;
                         reviewsContainer.appendChild(cardReview);
-                        observer.observe(cardReview); // Animamos la nueva reseña
+                        observer.observe(cardReview);
                     });
                 }
             });
@@ -502,11 +504,9 @@
         // 6. EVENTOS DE LOS BOTONES DE FILTRO
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Actualizar estado visual de los botones
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
-                // Filtrar el catálogo
                 const filtro = btn.getAttribute('data-filter');
                 renderizarCatalogo(filtro);
             });
@@ -514,15 +514,12 @@
 
         // 7. INICIALIZAR LA PÁGINA
         document.addEventListener("DOMContentLoaded", () => {
-            // Renderizamos todo por primera vez
             renderizarCatalogo('Todos');
             
-            // Observamos elementos estáticos (Títulos, Filtros)
             document.querySelectorAll('header.fade-in-up, .section-title.fade-in-up, .filters-container.fade-in-up').forEach(el => {
                 observer.observe(el);
             });
             
-            // Hacemos el header visible inmediatamente para que no haya pantalla en blanco
             document.querySelector('header').classList.add('visible');
         });
     </script>
