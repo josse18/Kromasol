@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Catálogo de Productos - Kromasol</title>
     <style>
         /* =========================================
@@ -22,12 +22,26 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            /* Bloquear la selección de texto absoluta en todo el sitio */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            
+            /* Evitar el resaltado azul y el menú contextual táctil en móviles */
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
+            
+            /* Bloquear gestos táctiles de zoom y panorámicas de ampliación */
+            touch-action: pan-x pan-y;
+            -ms-content-zooming: none;
         }
 
         /* --- Animaciones fluidas y pausadas --- */
@@ -226,6 +240,7 @@
             height: 100%;
             object-fit: contain;
             transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
         }
 
         .card:hover .product-img {
@@ -412,7 +427,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <!-- CABECERA CON ANIMACIÓN DE ENTRADA SUAVE -->
     <header>
@@ -453,7 +468,7 @@
     </footer>
 
     <!-- =========================================
-         SCRIPT DE FUNCIONALIDAD Y TRANSICIONES
+         SCRIPT DE FUNCIONALIDAD, TRANSICIONES Y BLOQUEO TOTAL DE ZOOM/SELECCIÓN
          ========================================= -->
     <script>
         const productos = [
@@ -494,7 +509,7 @@
                 categoria: "Control de Peso",
                 descripcion: "Bebida sabor capuchino o café negro formulada para el control de peso.",
                 beneficios: ["Contiene L-Carnitina y Hongo Shiitake", "Favorece el metabolismo", "Incluye fibra inulina de agave"],
-                imagen: "Nox - Kromasol Distribuidores.webp",
+                imagen: "Nox by Kromasol - Control de Peso.webp",
                 resenas: [
                     { usuario: "Silvia L.", texto: "Cambié mi café tradicional por Nox. Me da energía y me ha ayudado a controlar la ansiedad por comer pan dulce.", estrellas: 5 }
                 ]
@@ -515,9 +530,8 @@
         const reviewsContainer = document.getElementById('reviews-container');
         const filterBtns = document.querySelectorAll('.filter-btn');
 
-        const numeroWhatsApp = "593 0983437534"; 
+        const numeroWhatsApp = "593999999999"; 
 
-        // Observer con umbral equilibrado para una aparición pausada y fluida
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -607,36 +621,47 @@
                 observer.observe(el);
             });
         });
-        // =========================================
-        // SCRIPTS ADICIONALES DE BLOQUEO (Zoom y Teclado)
-        // =========================================
 
-        // Bloquear zoom con doble toque en dispositivos móviles táctiles
+        /* =========================================
+           BLOQUEO TOTAL DE ZOOM TÁCTIL (MÓVILES) Y ESCRITORIO
+           ========================================= */
+
+        // 1. Bloquear gestos de pinza (multi-touch zoom) en móviles
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('gesturechange', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('gestureend', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // 2. Bloquear doble toque para hacer zoom en pantallas táctiles
         let lastTouchEnd = 0;
-        document.addEventListener('touchend', (event) => {
+        document.addEventListener('touchend', function (e) {
             const now = (new Date()).getTime();
             if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
+                e.preventDefault();
             }
             lastTouchEnd = now;
         }, { passive: false });
 
-        // Bloquear combinaciones de teclado comunes para zoom o inspección (Ctrl + '+', '-', '0', etc.)
-        document.addEventListener('keydown', (e) => {
+        // 3. Bloquear zoom de teclado (Ctrl + '+' / '-' / '0')
+        document.addEventListener('keydown', function (e) {
             if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
                 e.preventDefault();
             }
         });
 
-        // Bloquear zoom por rueda del ratón manteniendo presionada la tecla Ctrl
-        document.addEventListener('wheel', (e) => {
+        // 4. Bloquear zoom con rueda del mouse + Ctrl
+        document.addEventListener('wheel', function (e) {
             if (e.ctrlKey) {
                 e.preventDefault();
             }
         }, { passive: false });
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>
