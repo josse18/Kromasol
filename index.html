@@ -607,6 +607,36 @@
                 observer.observe(el);
             });
         });
+        // =========================================
+        // SCRIPTS ADICIONALES DE BLOQUEO (Zoom y Teclado)
+        // =========================================
+
+        // Bloquear zoom con doble toque en dispositivos móviles táctiles
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+
+        // Bloquear combinaciones de teclado comunes para zoom o inspección (Ctrl + '+', '-', '0', etc.)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
+                e.preventDefault();
+            }
+        });
+
+        // Bloquear zoom por rueda del ratón manteniendo presionada la tecla Ctrl
+        document.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
