@@ -3,224 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Productos - Kromasol</title>
+    <title>Catálogo Premium - Kromasol</title>
     <style>
         /* =========================================
-           VARIABLES Y ESTILOS GENERALES
+           VARIABLES Y ESTILOS GENERALES (Paleta Elegante)
            ========================================= */
         :root {
-            --primary-color: #e6007e; 
-            --primary-hover: #c2006a;
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --star-color: #FFD700;
+            --primary-color: #9b1130; /* Borgoña / Vino elegante */
+            --primary-hover: #720d22;
+            --accent-gold: #c5a059;   /* Dorado sutil corporativo */
+            --bg-color: #faf9f6;      /* Marfil suave */
+            --card-bg: #ffffff;
+            --text-main: #2c2c2c;
+            --text-muted: #666666;
+            --star-color: #c5a059;
+            --transition-slow: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cinzel', 'Garamond', 'Segoe UI', serif;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             overflow-x: hidden;
+            letter-spacing: 0.3px;
         }
 
-        /* --- Animaciones base --- */
-        .fade-in-up {
+        /* --- Animaciones fluidas y pausadas --- */
+        .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(60px);
+            transition: var(--transition-slow);
         }
 
-        .fade-in-up.visible {
+        .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
 
         /* =========================================
-           CABECERA (HEADER)
+           CABECERA (HEADER) - ESTILO LUJO LENTO
            ========================================= */
         header {
-            background: linear-gradient(135deg, var(--primary-color), #ff4d94);
+            background: linear-gradient(135deg, #1a1a1a, #2d2024);
             color: white;
             text-align: center;
-            padding: 4rem 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 7rem 1.5rem;
+            border-bottom: 3px solid var(--accent-gold);
+            position: relative;
+            overflow: hidden;
         }
 
-        header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 0.8rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .header-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        .subtitle-text {
+            font-size: 1.6rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: #d1d1d1;
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: slowFadeDown 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
+            text-transform: uppercase;
+        }
+
+        .brand-text {
+            font-size: 4.2rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--accent-gold);
+            opacity: 0;
+            transform: scale(0.95);
+            animation: slowZoomIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 1s;
+            text-transform: uppercase;
+        }
+
+        .header-desc {
+            font-size: 1.15rem;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 300;
+            color: #b5b5b5;
+            max-width: 650px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: slowFadeUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 1.8s;
+            line-height: 1.8;
+        }
+
+        /* Keyframes de alta gama y temporización pausada */
+        @keyframes slowFadeDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slowZoomIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slowFadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* =========================================
-           SECCIONES GENERALES Y TÍTULOS
+           SECCIONES Y TÍTULOS
            ========================================= */
         section {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 1.5rem;
+            max-width: 1250px;
+            margin: 6rem auto;
+            padding: 0 2rem;
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.2rem;
-            color: #222;
-            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            color: var(--text-main);
+            margin-bottom: 3rem;
+            font-weight: 400;
+            letter-spacing: 2px;
             position: relative;
+            text-transform: uppercase;
         }
 
         .section-title::after {
             content: '';
             display: block;
-            width: 60px;
-            height: 4px;
-            background-color: var(--primary-color);
-            margin: 0.5rem auto 0;
-            border-radius: 2px;
+            width: 80px;
+            height: 2px;
+            background-color: var(--accent-gold);
+            margin: 1rem auto 0;
         }
 
         /* =========================================
-           SISTEMA DE FILTROS
+           SISTEMA DE FILTROS MINIMALISTA
            ========================================= */
         .filters-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 3rem;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
         }
 
         .filter-btn {
             background-color: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-            padding: 0.6rem 1.5rem;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: bold;
+            color: var(--text-muted);
+            border: 1px solid #dcdcdc;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            text-transform: uppercase;
         }
 
         .filter-btn:hover, .filter-btn.active {
             background-color: var(--primary-color);
             color: white;
-            box-shadow: 0 4px 12px rgba(230, 0, 126, 0.3);
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 25px rgba(155, 17, 48, 0.2);
         }
 
         /* =========================================
-           CUADRÍCULA DE PRODUCTOS
+           CUADRÍCULA DE PRODUCTOS (ESTILO TARJETA PREMIUM)
            ========================================= */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 3rem;
         }
 
         .card {
-            background: white;
-            border-radius: 16px;
+            background: var(--card-bg);
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #eaeaea;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(230, 0, 126, 0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+            border-color: var(--accent-gold);
         }
 
-        /* Contenedor y efecto de zoom para la imagen WebP */
         .card-img-container {
             width: 100%;
-            height: 220px;
+            height: 260px;
             overflow: hidden;
             background-color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         .product-img {
-            width: 100%;
-            height: 100%;
+            width: 85%;
+            height: 85%;
             object-fit: contain;
-            transition: transform 0.4s ease;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .card:hover .product-img {
-            transform: scale(1.08);
+            transform: scale(1.06);
         }
 
         .category-badge {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.3rem 0.8rem;
+            top: 1.2rem;
+            right: 1.2rem;
+            background-color: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(5px);
+            color: var(--accent-gold);
+            padding: 0.4rem 1rem;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 0.75rem;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             z-index: 2;
         }
 
         .card-content {
-            padding: 2rem;
+            padding: 2.5rem;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
 
         .card-title {
-            font-size: 1.6rem;
-            color: var(--primary-color);
-            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
 
         .card-desc {
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            color: #555;
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', sans-serif;
+            line-height: 1.8;
+            margin-bottom: 1.8rem;
+            color: var(--text-muted);
         }
 
         .card-benefits {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             padding-left: 1.2rem;
-            font-size: 0.95rem;
-            color: #444;
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', sans-serif;
+            color: #4a4a4a;
             flex-grow: 1;
         }
 
         .card-benefits li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
+            line-height: 1.5;
         }
 
         .btn-info {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 8px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 1.1rem;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             width: 100%;
             margin-top: auto;
             text-decoration: none;
@@ -229,83 +309,89 @@
         }
 
         .btn-info:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(230, 0, 126, 0.3);
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 10px 25px rgba(155, 17, 48, 0.25);
         }
 
         /* =========================================
-           SECCIÓN DE RESEÑAS
+           SECCIÓN DE RESEÑAS (ESTILO EDITORIAL)
            ========================================= */
         .reviews-section-container {
-            background-color: #fff;
-            padding: 5rem 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
-            margin-bottom: 0;
+            background-color: #f2f0eb;
+            padding: 6rem 0;
+            border-top: 1px solid #e2ded5;
+            border-bottom: 1px solid #e2ded5;
         }
 
         .reviews-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1250px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 0 2rem;
         }
 
         .review-card {
-            background-color: var(--bg-color);
-            padding: 2rem;
-            border-radius: 12px;
-            border-left: 5px solid var(--primary-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .review-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: translateY(-6px);
         }
 
         .product-tag {
             display: inline-block;
-            background-color: rgba(230, 0, 126, 0.1);
-            color: var(--primary-color);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            letter-spacing: 0.5px;
+            background-color: #f7f5f0;
+            color: var(--text-main);
+            padding: 0.3rem 0.9rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
         }
 
         .stars {
             color: var(--star-color);
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            letter-spacing: 3px;
         }
 
         .review-text {
             font-style: italic;
-            font-size: 1rem;
-            color: #444;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            color: #444444;
+            line-height: 1.8;
+            margin-bottom: 1.8rem;
         }
 
         .review-author {
             display: flex;
             align-items: center;
-            font-weight: bold;
-            color: #222;
+            font-weight: 600;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
         }
 
         .review-author::before {
             content: '';
             display: inline-block;
-            width: 30px;
-            height: 2px;
-            background-color: var(--primary-color);
-            margin-right: 10px;
+            width: 25px;
+            height: 1px;
+            background-color: var(--accent-gold);
+            margin-right: 12px;
         }
 
         /* =========================================
@@ -313,24 +399,32 @@
            ========================================= */
         footer {
             text-align: center;
-            padding: 3rem 1rem;
-            background-color: #222;
-            color: #ccc;
+            padding: 4rem 1rem;
+            background-color: #1a1a1a;
+            color: #888;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 300;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <header class="fade-in-up">
-        <h1>Bienestar y Nutrición Kromasol</h1>
-        <p>Descubre nuestra línea completa de suplementos alimenticios</p>
+    <!-- CABECERA CON ANIMACIÓN LENTA Y SOLEMNE -->
+    <header>
+        <div class="header-title">
+            <span class="subtitle-text">Bienestar y Nutrición</span>
+            <span class="brand-text">Kromasol</span>
+        </div>
+        <p class="header-desc">Colección exclusiva de suplementos formulados para elevar su calidad de vida con estándares internacionales.</p>
     </header>
 
     <!-- SECCIÓN DE PRODUCTOS Y FILTROS -->
     <section id="productos">
-        <h2 class="section-title fade-in-up">Nuestro Catálogo</h2>
+        <h2 class="section-title reveal">Catálogo Selecto</h2>
         
-        <div class="filters-container fade-in-up">
+        <div class="filters-container reveal">
             <button class="filter-btn active" data-filter="Todos">Todos</button>
             <button class="filter-btn" data-filter="Energía">Energía</button>
             <button class="filter-btn" data-filter="Nutrición">Nutrición</button>
@@ -343,106 +437,101 @@
         </div>
     </section>
 
-    <!-- SECCIÓN DE RESEÑAS DEDICADA -->
+    <!-- SECCIÓN DE RESEÑAS EDITORIALES -->
     <div class="reviews-section-container">
-        <h2 class="section-title fade-in-up">Experiencias de Nuestros Clientes</h2>
+        <h2 class="section-title reveal">Testimonios Distinguidos</h2>
         <div class="reviews-grid" id="reviews-container">
             <!-- Las reseñas se inyectarán dinámicamente aquí -->
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 Catálogo Independiente. Todos los derechos reservados.</p>
+        <p>&copy; 2026 Catálogo Independiente Kromasol. Excelencia y Bienestar.</p>
     </footer>
 
     <!-- =========================================
-         SCRIPT DE FUNCIONALIDAD
+         SCRIPT DE FUNCIONALIDAD Y APARICIÓN LENTA
          ========================================= -->
     <script>
-        // 1. BASE DE DATOS DE PRODUCTOS CON RUTAS DE IMÁGENES WEBP
-        // Asegúrate de crear una carpeta llamada 'img' y colocar tus archivos ahí.
         const productos = [
             {
                 nombre: "Supernova",
                 categoria: "Energía",
-                descripcion: "Polvo para preparar una bebida energética sabor cereza.",
-                beneficios: ["Contiene complejo B y Zinc", "Proporciona energía física y mental", "Ayuda a reducir la fatiga"],
+                descripcion: "Polvo para preparar una bebida energética de alta gama sabor cereza.",
+                beneficios: ["Contiene complejo B y Zinc de alta pureza", "Proporciona vitalidad física y mental prolongada", "Optimiza el rendimiento diario sin fatiga"],
                 imagen: "Supernova.webp",
                 resenas: [
-                    { usuario: "Carlos M.", texto: "Trabajo turnos de 12 horas y desde que lo tomo ya no siento ese bajón de energía a mitad del día. Excelente sabor.", estrellas: 5 },
-                    { usuario: "Elena R.", texto: "Me ayuda muchísimo con mi rutina de ejercicios en la mañana. Lo recomiendo al 100%.", estrellas: 5 }
+                    { usuario: "Carlos M.", texto: "La diferencia en mi rendimiento diario es notable. Una fórmula sofisticada y efectiva.", estrellas: 5 },
+                    { usuario: "Elena R.", texto: "Indispensable en mis mañanas para mantener un enfoque absoluto.", estrellas: 5 }
                 ]
             },
             {
                 nombre: "Kosmos",
                 categoria: "Nutrición",
-                descripcion: "Suplemento multivitamínico con antioxidantes y minerales esenciales.",
-                beneficios: ["Refuerza el sistema inmunológico", "Rico en antioxidantes", "Complementa la nutrición diaria"],
+                descripcion: "Suplemento multivitamínico con antioxidantes y oligoelementos esenciales.",
+                beneficios: ["Fortalece el sistema inmunológico con elegancia biológica", "Alto contenido de antioxidantes celulares", "Complemento ideal para un estilo de vida exigente"],
                 imagen: "Kosmos by Kromasol Regenerador celular….webp",
                 resenas: [
-                    { usuario: "Javier T.", texto: "Me he sentido mucho más fuerte y rara vez me resfrío desde que empecé a tomarlo todos los días.", estrellas: 5 }
+                    { usuario: "Javier T.", texto: "Se nota el rigor en la calidad de sus componentes. Mi bienestar general ha escalado.", estrellas: 5 }
                 ]
             },
             {
                 nombre: "Vesta",
                 categoria: "Digestión",
-                descripcion: "Concentrado líquido a base de pulpa de Sábila (Aloe Vera) y Astaxantina.",
-                beneficios: ["Apoya la salud digestiva", "Poder desinflamatorio", "Rico en Vitamina C"],
+                descripcion: "Concentrado líquido refinado a base de pulpa de Sábila y Astaxantina.",
+                beneficios: ["Armoniza de forma óptima la salud digestiva", "Notable capacidad antiinflamatoria natural", "Enriquecido con antioxidantes y Vitamina C"],
                 imagen: "Vesta by kromasol - goji, astaxantina y pulpa de sábila (1 lt).webp",
                 resenas: [
-                    { usuario: "María F.", texto: "Sufría de gastritis y pesadez constante. Vesta me ha aliviado la inflamación estomacal de una forma increíble.", estrellas: 5 },
-                    { usuario: "Roberto G.", texto: "Sabe muy bien en frío y mi digestión mejoró desde la primera semana.", estrellas: 5 }
+                    { usuario: "María F.", texto: "Un alivio estomacal inmediato con un perfil de sabor sumamente agradable.", estrellas: 5 },
+                    { usuario: "Roberto G.", texto: "La pureza de sus ingredientes se percibe desde la primera toma.", estrellas: 5 }
                 ]
             },
             {
                 nombre: "Nox",
                 categoria: "Control de Peso",
-                descripcion: "Bebida sabor capuchino o café negro formulada para el control de peso.",
-                beneficios: ["Contiene L-Carnitina y Hongo Shiitake", "Favorece el metabolismo", "Incluye fibra inulina de agave"],
+                descripcion: "Bebida aromática sabor capuchino o café gourmet para la gestión corporal.",
+                beneficios: ["Formulado con L-Carnitina y Hongo Shiitake selecto", "Estimula el metabolismo de manera sutil", "Incluye fibra soluble de inulina de agave"],
                 imagen: "Nox - Kromasol Distribuidores.webp",
                 resenas: [
-                    { usuario: "Silvia L.", texto: "Cambié mi café tradicional por Nox. Me da energía y me ha ayudado a controlar la ansiedad por comer pan dulce.", estrellas: 5 }
+                    { usuario: "Silvia L.", texto: "Sustituyó perfectamente mi café habitual. Me otorga control y ligereza.", estrellas: 5 }
                 ]
             },
             {
                 nombre: "Antara",
                 categoria: "Nutrición",
-                descripcion: "Polvo para batidos ricos en proteínas, vitaminas y fibra.",
-                beneficios: ["Ideal como sustituto parcial", "Ayuda a la recuperación muscular", "Sensación de saciedad"],
+                descripcion: "Polvo proteico avanzado para la recuperación y nutrición integral.",
+                beneficios: ["Excelente como alternativa nutricional balanceada", "Facilita la recuperación física y muscular", "Genera una prolongada y placentera saciedad"],
                 imagen: "Antara.webp",
                 resenas: [
-                    { usuario: "Andrés V.", texto: "Lo uso después de entrenar o cuando no tengo tiempo de desayunar fuerte. Te mantiene lleno por horas y no cae pesado.", estrellas: 5 }
+                    { usuario: "Andrés V.", texto: "Su textura y digestibilidad superan por completo a cualquier otro suplemento común.", estrellas: 5 }
                 ]
             }
         ];
 
-        // 2. REFERENCIAS DEL DOM
         const productsContainer = document.getElementById('products-container');
         const reviewsContainer = document.getElementById('reviews-container');
         const filterBtns = document.querySelectorAll('.filter-btn');
 
-        // 3. NÚMERO DE WHATSAPP (Configura tu número aquí con código 593)
-        const numeroWhatsApp = "593 0983437534"; 
+        const numeroWhatsApp = "593999999999"; 
 
-        // 4. CONFIGURACIÓN DE ANIMACIONES (Intersection Observer)
+        // Observer configurado con umbral más alto para un despliegue visual lento y solemne
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1
+            threshold: 0.15
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, 50);
+                        entry.target.classList.add('active');
+                    }, 150); // Retardo deliberado para lentitud elegante
                     observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        // 5. FUNCIÓN PRINCIPAL DE RENDERIZADO
         function renderizarCatalogo(filtro) {
             productsContainer.innerHTML = ''; 
             reviewsContainer.innerHTML = ''; 
@@ -452,15 +541,13 @@
                 : productos.filter(p => p.categoria === filtro);
 
             productosFiltrados.forEach(producto => {
-                
-                // --- RENDERIZAR PRODUCTO CON IMAGEN WEBP ---
                 const beneficiosHTML = producto.beneficios.map(b => `<li>${b}</li>`).join('');
                 
-                const textoMensaje = `Hola, me interesa obtener más información sobre el producto ${producto.nombre}.`;
+                const textoMensaje = `Estimados, deseo recibir información exclusiva sobre el producto ${producto.nombre}.`;
                 const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(textoMensaje)}`;
                 
                 const cardProduct = document.createElement('div');
-                cardProduct.className = 'card fade-in-up'; 
+                cardProduct.className = 'card reveal'; 
                 cardProduct.innerHTML = `
                     <div style="position: relative;">
                         <span class="category-badge">${producto.categoria}</span>
@@ -483,11 +570,10 @@
                 productsContainer.appendChild(cardProduct);
                 observer.observe(cardProduct);
 
-                // --- RENDERIZAR RESEÑAS ---
                 if(producto.resenas) {
                     producto.resenas.forEach(resena => {
                         const cardReview = document.createElement('div');
-                        cardReview.className = 'review-card fade-in-up';
+                        cardReview.className = 'review-card reveal';
                         cardReview.innerHTML = `
                             <span class="product-tag">${producto.nombre}</span>
                             <div class="stars">${'&#9733;'.repeat(resena.estrellas)}</div>
@@ -501,7 +587,6 @@
             });
         }
 
-        // 6. EVENTOS DE LOS BOTONES DE FILTRO
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -512,15 +597,12 @@
             });
         });
 
-        // 7. INICIALIZAR LA PÁGINA
         document.addEventListener("DOMContentLoaded", () => {
             renderizarCatalogo('Todos');
             
-            document.querySelectorAll('header.fade-in-up, .section-title.fade-in-up, .filters-container.fade-in-up').forEach(el => {
+            document.querySelectorAll('.section-title.reveal, .filters-container.reveal').forEach(el => {
                 observer.observe(el);
             });
-            
-            document.querySelector('header').classList.add('visible');
         });
     </script>
 </body>
