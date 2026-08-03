@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos - Kromasol</title>
+    <style>
+        /* =========================================
+           VARIABLES Y ESTILOS GENERALES
+           ========================================= */
+        :root {
+            --primary-color: #e6007e; 
+            --primary-hover: #c2006a;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --star-color: #FFD700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* --- Animaciones base --- */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           CABECERA (HEADER)
+           ========================================= */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #ff4d94);
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* =========================================
+           SECCIONES GENERALES Y TÍTULOS
+           ========================================= */
+        section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #222;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 0.5rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* =========================================
+           SISTEMA DE FILTROS
+           ========================================= */
+        .filters-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .filter-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(230, 0, 126, 0.3);
+        }
+
+        /* =========================================
+           CUADRÍCULA DE PRODUCTOS
+           ========================================= */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(230, 0, 126, 0.15);
+        }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 220px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .card:hover .card-img-placeholder {
+            background-color: #e0e0e0;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        .card-content {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+        }
+
+        .card-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .card-benefits {
+            margin-bottom: 2rem;
+            padding-left: 1.2rem;
+            font-size: 0.95rem;
+            color: #444;
+            flex-grow: 1;
+        }
+
+        .card-benefits li {
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-info {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: auto;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-info:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 0, 126, 0.3);
+        }
+
+        /* =========================================
+           SECCIÓN DE RESEÑAS
+           ========================================= */
+        .reviews-section-container {
+            background-color: #fff;
+            padding: 5rem 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+            margin-bottom: 0;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .review-card {
+            background-color: var(--bg-color);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .product-tag {
+            display: inline-block;
+            background-color: rgba(230, 0, 126, 0.1);
+            color: var(--primary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .stars {
+            color: var(--star-color);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-text {
+            font-style: italic;
+            font-size: 1rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-author {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .review-author::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        /* =========================================
+           PIE DE PÁGINA (FOOTER)
+           ========================================= */
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            background-color: #222;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="fade-in-up">
+        <h1>Bienestar y Nutrición Kromasol</h1>
+        <p>Descubre nuestra línea completa de suplementos alimenticios</p>
+    </header>
+
+    <!-- SECCIÓN DE PRODUCTOS Y FILTROS -->
+    <section id="productos">
+        <h2 class="section-title fade-in-up">Nuestro Catálogo</h2>
+        
+        <div class="filters-container fade-in-up">
+            <button class="filter-btn active" data-filter="Todos">Todos</button>
+            <button class="filter-btn" data-filter="Energía">Energía</button>
+            <button class="filter-btn" data-filter="Nutrición">Nutrición</button>
+            <button class="filter-btn" data-filter="Control de Peso">Control de Peso</button>
+            <button class="filter-btn" data-filter="Digestión">Digestión</button>
+        </div>
+
+        <div class="products-grid" id="products-container">
+            <!-- Los productos se inyectarán dinámicamente aquí -->
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE RESEÑAS DEDICADA -->
+    <div class="reviews-section-container">
+        <h2 class="section-title fade-in-up">Experiencias de Nuestros Clientes</h2>
+        <div class="reviews-grid" id="reviews-container">
+            <!-- Las reseñas se inyectarán dinámicamente aquí -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Catálogo Independiente. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- =========================================
+         SCRIPT DE FUNCIONALIDAD
+         ========================================= -->
+    <script>
+        // 1. BASE DE DATOS DE PRODUCTOS
+        const productos = [
+            {
+                nombre: "Supernova",
+                categoria: "Energía",
+                descripcion: "Polvo para preparar una bebida energética sabor cereza.",
+                beneficios: ["Contiene complejo B y Zinc", "Proporciona energía física y mental", "Ayuda a reducir la fatiga"],
+                imagenText: "Imagen de Supernova",
+                resenas: [
+                    { usuario: "Carlos M.", texto: "Trabajo turnos de 12 horas y desde que lo tomo ya no siento ese bajón de energía a mitad del día. Excelente sabor.", estrellas: 5 },
+                    { usuario: "Elena R.", texto: "Me ayuda muchísimo con mi rutina de ejercicios en la mañana. Lo recomiendo al 100%.", estrellas: 5 }
+                ]
+            },
+            {
+                nombre: "Kosmos",
+                categoria: "Nutrición",
+                descripcion: "Suplemento multivitamínico con antioxidantes y minerales esenciales.",
+                beneficios: ["Refuerza el sistema inmunológico", "Rico en antioxidantes", "Complementa la nutrición diaria"],
+                imagenText: "Imagen de Kosmos",
+                resenas: [
+                    { usuario: "Javier T.", texto: "Me he sentido mucho más fuerte y rara vez me resfrío desde que empecé a tomarlo todos los días.", estrellas: 5 }
+                ]
+            },
+            {
+                nombre: "Vesta",
+                categoria: "Digestión",
+                descripcion: "Concentrado líquido a base de pulpa de Sábila (Aloe Vera) y Astaxantina.",
+                beneficios: ["Apoya la salud digestiva", "Poder desinflamatorio", "Rico en Vitamina C"],
+                imagenText: "Imagen de Vesta",
+                resenas: [
+                    { usuario: "María F.", texto: "Sufría de gastritis y pesadez constante. Vesta me ha aliviado la inflamación estomacal de una forma increíble.", estrellas: 5 },
+                    { usuario: "Roberto G.", texto: "Sabe muy bien en frío y mi digestión mejoró desde la primera semana.", estrellas: 5 }
+                ]
+            },
+            {
+                nombre: "Nox",
+                categoria: "Control de Peso",
+                descripcion: "Bebida sabor capuchino o café negro formulada para el control de peso.",
+                beneficios: ["Contiene L-Carnitina y Hongo Shiitake", "Favorece el metabolismo", "Incluye fibra inulina de agave"],
+                imagenText: "Imagen de Nox",
+                resenas: [
+                    { usuario: "Silvia L.", texto: "Cambié mi café tradicional por Nox. Me da energía y me ha ayudado a controlar la ansiedad por comer pan dulce.", estrellas: 5 }
+                ]
+            },
+            {
+                nombre: "Antara",
+                categoria: "Nutrición",
+                descripcion: "Polvo para batidos ricos en proteínas, vitaminas y fibra.",
+                beneficios: ["Ideal como sustituto parcial", "Ayuda a la recuperación muscular", "Sensación de saciedad"],
+                imagenText: "Imagen de Antara",
+                resenas: [
+                    { usuario: "Andrés V.", texto: "Lo uso después de entrenar o cuando no tengo tiempo de desayunar fuerte. Te mantiene lleno por horas y no cae pesado.", estrellas: 5 }
+                ]
+            }
+        ];
+
+        // 2. REFERENCIAS DEL DOM
+        const productsContainer = document.getElementById('products-container');
+        const reviewsContainer = document.getElementById('reviews-container');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // 3. NÚMERO DE WHATSAPP (Coloca tu número aquí)
+        // Usa el formato 593 seguido de tus 9 dígitos. Ej: 593991234567
+        const numeroWhatsApp = "593999999999"; 
+
+        // 4. CONFIGURACIÓN DE ANIMACIONES (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, 50); // Pequeño retraso para efecto cascada
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // 5. FUNCIÓN PRINCIPAL DE RENDERIZADO (Actualiza Productos y Reseñas)
+        function renderizarCatalogo(filtro) {
+            // Limpiamos los contenedores
+            productsContainer.innerHTML = ''; 
+            reviewsContainer.innerHTML = ''; 
+            
+            // Filtramos los datos
+            const productosFiltrados = filtro === 'Todos' 
+                ? productos 
+                : productos.filter(p => p.categoria === filtro);
+
+            // Generamos las tarjetas de productos y sus reseñas
+            productosFiltrados.forEach(producto => {
+                
+                // --- RENDERIZAR PRODUCTO ---
+                const beneficiosHTML = producto.beneficios.map(b => `<li>${b}</li>`).join('');
+                
+                // Mensaje dinámico para WhatsApp
+                const textoMensaje = `Hola, me interesa obtener más información sobre el producto ${producto.nombre}.`;
+                const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(textoMensaje)}`;
+                
+                const cardProduct = document.createElement('div');
+                cardProduct.className = 'card fade-in-up'; 
+                cardProduct.innerHTML = `
+                    <div style="position: relative;">
+                        <span class="category-badge">${producto.categoria}</span>
+                        <div class="card-img-placeholder">
+                            ${producto.imagenText}
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="card-title">${producto.nombre}</h2>
+                        <p class="card-desc">${producto.descripcion}</p>
+                        <ul class="card-benefits">
+                            ${beneficiosHTML}
+                        </ul>
+                        <a href="${urlWhatsApp}" target="_blank" class="btn-info">
+                            Solicitar Información
+                        </a>
+                    </div>
+                `;
+                
+                productsContainer.appendChild(cardProduct);
+                observer.observe(cardProduct); // Animamos la nueva tarjeta
+
+                // --- RENDERIZAR RESEÑAS DE ESTE PRODUCTO ---
+                if(producto.resenas) {
+                    producto.resenas.forEach(resena => {
+                        const cardReview = document.createElement('div');
+                        cardReview.className = 'review-card fade-in-up';
+                        cardReview.innerHTML = `
+                            <span class="product-tag">${producto.nombre}</span>
+                            <div class="stars">${'&#9733;'.repeat(resena.estrellas)}</div>
+                            <p class="review-text">"${resena.texto}"</p>
+                            <span class="review-author">${resena.usuario}</span>
+                        `;
+                        reviewsContainer.appendChild(cardReview);
+                        observer.observe(cardReview); // Animamos la nueva reseña
+                    });
+                }
+            });
+        }
+
+        // 6. EVENTOS DE LOS BOTONES DE FILTRO
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Actualizar estado visual de los botones
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Filtrar el catálogo
+                const filtro = btn.getAttribute('data-filter');
+                renderizarCatalogo(filtro);
+            });
+        });
+
+        // 7. INICIALIZAR LA PÁGINA
+        document.addEventListener("DOMContentLoaded", () => {
+            // Renderizamos todo por primera vez
+            renderizarCatalogo('Todos');
+            
+            // Observamos elementos estáticos (Títulos, Filtros)
+            document.querySelectorAll('header.fade-in-up, .section-title.fade-in-up, .filters-container.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Hacemos el header visible inmediatamente para que no haya pantalla en blanco
+            document.querySelector('header').classList.add('visible');
+        });
+    </script>
+</body>
+</html>
