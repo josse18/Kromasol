@@ -468,7 +468,7 @@
     </footer>
 
     <!-- =========================================
-         SCRIPT DE FUNCIONALIDAD, TRANSICIONES Y BLOQUEO TOTAL DE ZOOM/SELECCIÓN
+         SCRIPT DE FUNCIONALIDAD Y REDIRECCIÓN INTELIGENTE WHATSAPP
          ========================================= -->
     <script>
         const productos = [
@@ -476,7 +476,7 @@
                 nombre: "Supernova",
                 categoria: "Energía",
                 descripcion: "Polvo para preparar una bebida energética sabor cereza.",
-                beneficios: ["Contiene complejo B y Zinc", "Proporciona energía física y mental", "Ayuda a reducir la fatiga"],
+                beneficios: ["Contiene complejo B y Zinc", "Proporciona energía física y mental", "Ayuda a la reducir la fatiga"],
                 imagen: "Supernova.webp",
                 resenas: [
                     { usuario: "Carlos M.", texto: "Trabajo turnos de 12 horas y desde que lo tomo ya no siento ese bajón de energía a mitad del día. Excelente sabor.", estrellas: 5 },
@@ -530,7 +530,7 @@
         const reviewsContainer = document.getElementById('reviews-container');
         const filterBtns = document.querySelectorAll('.filter-btn');
 
-        const numeroWhatsApp = "593 0983437534"; 
+        const numeroWhatsApp = "593999999999"; 
 
         const observerOptions = {
             root: null,
@@ -549,6 +549,23 @@
             });
         }, observerOptions);
 
+        // Función inteligente para abrir WhatsApp según el dispositivo
+        function abrirWhatsApp(nombreProducto) {
+            const mensaje = `Hola, me interesa obtener más información sobre el producto ${nombreProducto}.`;
+            const esMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            let url = "";
+            if (esMobile) {
+                // Esquema directo para app móvil con fallback web si falla
+                url = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+            } else {
+                // Escritorio
+                url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+            }
+            
+            window.location.href = url;
+        }
+
         function renderizarCatalogo(filtro) {
             productsContainer.innerHTML = ''; 
             reviewsContainer.innerHTML = ''; 
@@ -559,9 +576,6 @@
 
             productosFiltrados.forEach(producto => {
                 const beneficiosHTML = producto.beneficios.map(b => `<li>${b}</li>`).join('');
-                
-                const textoMensaje = `Hola, me interesa obtener más información sobre el producto ${producto.nombre}.`;
-                const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(textoMensaje)}`;
                 
                 const cardProduct = document.createElement('div');
                 cardProduct.className = 'card reveal'; 
@@ -578,12 +592,18 @@
                         <ul class="card-benefits">
                             ${beneficiosHTML}
                         </ul>
-                        <a href="${urlWhatsApp}" target="_blank" class="btn-info">
+                        <button class="btn-info" type="button">
                             Solicitar Información
-                        </a>
+                        </button>
                     </div>
                 `;
                 
+                // Asignar evento de clic controlado de forma limpia
+                const btnInfo = cardProduct.querySelector('.btn-info');
+                btnInfo.addEventListener('click', () => {
+                    abrirWhatsApp(producto.nombre);
+                });
+
                 productsContainer.appendChild(cardProduct);
                 observer.observe(cardProduct);
 
@@ -623,44 +643,27 @@
         });
 
         /* =========================================
-           BLOQUEO TOTAL DE ZOOM TÁCTIL (MÓVILES) Y ESCRITORIO
+           BLOQUEO TOTAL DE ZOOM Y SELECCIÓN
            ========================================= */
+        document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+        document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
+        document.addEventListener('gestureend', function (e) { e.preventDefault(); }, { passive: false });
 
-        // 1. Bloquear gestos de pinza (multi-touch zoom) en móviles
-        document.addEventListener('gesturestart', function (e) {
-            e.preventDefault();
-        }, { passive: false });
-
-        document.addEventListener('gesturechange', function (e) {
-            e.preventDefault();
-        }, { passive: false });
-
-        document.addEventListener('gestureend', function (e) {
-            e.preventDefault();
-        }, { passive: false });
-
-        // 2. Bloquear doble toque para hacer zoom en pantallas táctiles
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (e) {
             const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
+            if (now - lastTouchEnd <= 300) { e.preventDefault(); }
             lastTouchEnd = now;
         }, { passive: false });
 
-        // 3. Bloquear zoom de teclado (Ctrl + '+' / '-' / '0')
         document.addEventListener('keydown', function (e) {
             if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
                 e.preventDefault();
             }
         });
 
-        // 4. Bloquear zoom con rueda del mouse + Ctrl
         document.addEventListener('wheel', function (e) {
-            if (e.ctrlKey) {
-                e.preventDefault();
-            }
+            if (e.ctrlKey) { e.preventDefault(); }
         }, { passive: false });
     </script>
 </body>
